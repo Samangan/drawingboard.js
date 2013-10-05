@@ -507,7 +507,7 @@ DrawingBoard.Board.prototype = {
 		this.coords = {};
 		this.coords.old = this.coords.current = this.coords.oldMid = { x: 0, y: 0 };
 
-		this.dom.$canvas.on('mousemove', $.proxy(function(e) {
+		this.dom.$canvas.on('mousedown touchstart', $.proxy(function(e) {
 			this._isShiftKeyPressed(e);
 		}, this));
 
