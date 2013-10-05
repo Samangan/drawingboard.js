@@ -565,7 +565,7 @@ DrawingBoard.Board.prototype = {
 				this.ctx.moveTo(this.startCoords.x, this.startCoords.y);
 				this.ctx.lineTo(this.coords.current.x, this.coords.current.y); 
 				this.ctx.stroke();
-      			this.ctx.closePath();	
+				this.ctx.closePath();	
 
 			} else {
 				if(!this.isShiftKeyDown) {
@@ -597,7 +597,7 @@ DrawingBoard.Board.prototype = {
 		this.coords.oldMid = this._getMidInputCoords(coords);
 		this.startCoords = this.coords.current;
 		this.isDrawing = true;
-		
+				
 		if (!window.requestAnimationFrame) this.draw();
 
 		this.ev.trigger('board:startDrawing', {e: e, coords: coords});
