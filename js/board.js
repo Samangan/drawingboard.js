@@ -502,8 +502,14 @@ DrawingBoard.Board.prototype = {
 	initDrawEvents: function() {
 		this.isDrawing = false;
 		this.isMouseHovering = false;
+		this.isShiftKeyDown = false;
+		this.startCoords = {};
 		this.coords = {};
 		this.coords.old = this.coords.current = this.coords.oldMid = { x: 0, y: 0 };
+
+		this.dom.$canvas.on('mousemove', $.proxy(function(e) {
+			this._isShiftKeyPressed(e);
+		}, this));
 
 		this.dom.$canvas.on('mousedown touchstart', $.proxy(function(e) {
 			this._onInputStart(e, this._getInputCoords(e) );
@@ -518,6 +524,9 @@ DrawingBoard.Board.prototype = {
 		}, this));
 
 		this.dom.$canvas.on('mouseup touchend', $.proxy(function(e) {
+			if(this.isShiftKeyDown) {
+				this.draw(true);
+			}
 			this._onInputStop(e, this._getInputCoords(e) );
 		}, this));
 
@@ -537,7 +546,7 @@ DrawingBoard.Board.prototype = {
 		if (window.requestAnimationFrame) requestAnimationFrame( $.proxy(this.draw, this) );
 	},
 
-	draw: function() {
+	draw: function(drawingLine) {
 		//if the pencil size is big (>10), the small crosshair makes a friend: a circle of the size of the pencil
 		//todo: have the circle works on every browser - it currently should be added only when CSS pointer-events are supported
 		//we assume that if requestAnimationFrame is supported, pointer-events is too, but this is terribad.
@@ -551,11 +560,22 @@ DrawingBoard.Board.prototype = {
 		}
 
 		if (this.isDrawing) {
-			var currentMid = this._getMidInputCoords(this.coords.current);
-			this.ctx.beginPath();
-			this.ctx.moveTo(currentMid.x, currentMid.y);
-			this.ctx.quadraticCurveTo(this.coords.old.x, this.coords.old.y, this.coords.oldMid.x, this.coords.oldMid.y);
-			this.ctx.stroke();
+			if(drawingLine) {
+				this.ctx.beginPath();
+				this.ctx.moveTo(this.startCoords.x, this.startCoords.y);
+				this.ctx.lineTo(this.coords.current.x, this.coords.current.y); 
+				this.ctx.stroke();
+      			this.ctx.closePath();	
+
+			} else {
+				if(!this.isShiftKeyDown) {
+					var currentMid = this._getMidInputCoords(this.coords.current);
+					this.ctx.beginPath();
+					this.ctx.moveTo(currentMid.x, currentMid.y);
+					this.ctx.quadraticCurveTo(this.coords.old.x, this.coords.old.y, this.coords.oldMid.x, this.coords.oldMid.y);
+					this.ctx.stroke();
+				}
+			}
 
 			this.coords.old = this.coords.current;
 			this.coords.oldMid = currentMid;
@@ -564,11 +584,20 @@ DrawingBoard.Board.prototype = {
 		if (window.requestAnimationFrame) requestAnimationFrame( $.proxy(function() { this.draw(); }, this) );
 	},
 
+	_isShiftKeyPressed: function(e) {
+		 if (e.shiftKey==1) {
+	        this.isShiftKeyDown = true;
+	    } else {
+	        this.isShiftKeyDown = false;
+	    }
+	},
+
 	_onInputStart: function(e, coords) {
 		this.coords.current = this.coords.old = coords;
 		this.coords.oldMid = this._getMidInputCoords(coords);
+		this.startCoords = this.coords.current;
 		this.isDrawing = true;
-
+		
 		if (!window.requestAnimationFrame) this.draw();
 
 		this.ev.trigger('board:startDrawing', {e: e, coords: coords});
