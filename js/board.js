@@ -565,7 +565,6 @@ DrawingBoard.Board.prototype = {
 				this.ctx.moveTo(this.startCoords.x, this.startCoords.y);
 				this.ctx.lineTo(this.coords.current.x, this.coords.current.y); 
 				this.ctx.stroke();
-				this.ctx.closePath();	
 
 			} else {
 				if(!this.isShiftKeyDown) {
