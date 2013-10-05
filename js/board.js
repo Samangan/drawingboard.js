@@ -585,11 +585,11 @@ DrawingBoard.Board.prototype = {
 	},
 
 	_isShiftKeyPressed: function(e) {
-		 if (e.shiftKey==1) {
-	        this.isShiftKeyDown = true;
-	    } else {
-	        this.isShiftKeyDown = false;
-	    }
+		if (e.shiftKey==1) {
+			this.isShiftKeyDown = true;
+		} else {
+			this.isShiftKeyDown = false;
+		}
 	},
 
 	_onInputStart: function(e, coords) {
@@ -597,7 +597,7 @@ DrawingBoard.Board.prototype = {
 		this.coords.oldMid = this._getMidInputCoords(coords);
 		this.startCoords = this.coords.current;
 		this.isDrawing = true;
-				
+
 		if (!window.requestAnimationFrame) this.draw();
 
 		this.ev.trigger('board:startDrawing', {e: e, coords: coords});
