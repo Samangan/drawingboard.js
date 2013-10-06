@@ -509,9 +509,6 @@ DrawingBoard.Board.prototype = {
 
 		this.dom.$canvas.on('mousedown touchstart', $.proxy(function(e) {
 			this._isShiftKeyPressed(e);
-		}, this));
-
-		this.dom.$canvas.on('mousedown touchstart', $.proxy(function(e) {
 			this._onInputStart(e, this._getInputCoords(e) );
 		}, this));
 
