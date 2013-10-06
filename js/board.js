@@ -584,7 +584,7 @@ DrawingBoard.Board.prototype = {
 	},
 
 	_isShiftKeyPressed: function(e) {
-		if (e.shiftKey==1) {
+		if (e.shiftKey) {
 			this.isShiftKeyDown = true;
 		} else {
 			this.isShiftKeyDown = false;
